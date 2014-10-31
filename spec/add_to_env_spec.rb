@@ -1,29 +1,7 @@
-require 'rack/test'
+require 'spec_helper'
 require 'rack/josh/merge_with_env'
 
 RSpec.describe Rack::Josh::MergeWithEnv do
-  class MockApp
-    def initialize(return_values={})
-      @status  = return_values.fetch :status,  200
-      @headers = return_values.fetch :headers, {}
-      @body    = return_values.fetch :body,    "the body"
-    end
-
-    attr_reader :provided_env
-    def call(env)
-      @provided_env = env
-      [@status, @headers, [@body]]
-    end
-  end
-
-  def request_for(*args, &block)
-    Rack::MockRequest.new(
-      Rack::Lint.new(
-        Rack::Josh::MergeWithEnv.new(*args, &block)
-      )
-    )
-  end
-
   it 'merges the provided hash into the env' do
     mock_app = MockApp.new
     response = request_for(mock_app, {'a' => 'b'}).get('/')
