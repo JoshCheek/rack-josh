@@ -1,5 +1,8 @@
 require 'rack/test'
 
+class Fixtures
+end
+
 class MockApp
   def initialize(return_values={})
     @status  = return_values.fetch :status,  200
